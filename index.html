@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Bosque Mágico de las Figuras - Juego Educativo</title>
+    <meta name="description" content="Un divertido juego educativo interactivo para niños de 5 años sobre las figuras geométricas, guiado por voz.">
+    <!-- Google Fonts: Fredoka y Quicksand, tipografías infantiles muy amigables -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Encabezado superior con controles y estrellas de progreso -->
+        <header class="game-header">
+            <div class="header-left">
+                <button id="btn-sound" class="btn-icon" title="Sonido" aria-label="Activar o desactivar sonido">🔊</button>
+                <button id="btn-voice" class="btn-icon" title="Voz" aria-label="Activar o desactivar voz de Clara">🗣️</button>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="star-container">
+                    <span class="star-slot active">⭐</span>
+                    <span class="star-slot">⭐</span>
+                    <span class="star-slot">⭐</span>
+                </div>
+                <div class="score-display">¡Puntos: <span id="score-val">0</span>!</div>
+            </div>
+            
+            <div class="header-right">
+                <!-- Selector oculto o sutil para configurar la voz de mujer si es necesario -->
+                <select id="voice-select" class="voice-select-dropdown" aria-label="Seleccionar voz"></select>
+            </div>
+        </header>
+
+        <!-- Área Principal de Contenido del Juego -->
+        <main class="game-canvas">
+            
+            <!-- PANTALLA 1: BIENVENIDA -->
+            <section id="screen-welcome" class="game-screen active">
+                <div class="welcome-content">
+                    <h1 class="game-title">El Bosque Mágico<br><span class="highlight">de las Figuras</span></h1>
+                    <p class="game-subtitle">¡Aprende jugando con Clara!</p>
+                    
+                    <div class="welcome-character-container">
+                        <img src="assets/fairy_clara.png" alt="Hada Clara" class="character-welcome animated-float" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'40\' r=\'25\' fill=\'%23FFD1DC\'/><polygon points=\'50,65 15,95 85,95\' fill=\'%23B39DDB\'/><circle cx=\'42\' cy=\'35\' r=\'3\' fill=\'%23333\'/><circle cx=\'58\' cy=\'35\' r=\'3\' fill=\'%23333\'/><path d=\'M40,50 Q50,60 60,50\' stroke=\'%23FF4081\' stroke-width=\'3\' fill=\'none\'/><path d=\'M15,40 Q25,25 35,40 Z\' fill=\'%2381D4FA\' opacity=\'0.7\'/><path d=\'M85,40 Q75,25 65,40 Z\' fill=\'%2381D4FA\' opacity=\'0.7\'/></svg>'">
+                    </div>
+                    
+                    <button id="btn-start" class="btn-play pulse-animation">¡JUGAR! 🚀</button>
+                </div>
+            </section>
+
+            <!-- PANTALLA 2: MINIJUEGOS -->
+            <section id="screen-play" class="game-screen">
+                <div class="play-layout">
+                    
+                    <!-- Panel Izquierdo: Clara y sus Instrucciones -->
+                    <div class="clara-panel">
+                        <div class="clara-avatar-wrapper">
+                            <img src="assets/fairy_clara.png" alt="Hada Clara" id="clara-avatar" class="character-game animated-float" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'40\' r=\'25\' fill=\'%23FFD1DC\'/><polygon points=\'50,65 15,95 85,95\' fill=\'%23B39DDB\'/><circle cx=\'42\' cy=\'35\' r=\'3\' fill=\'%23333\'/><circle cx=\'58\' cy=\'35\' r=\'3\' fill=\'%23333\'/><path d=\'M40,50 Q50,60 60,50\' stroke=\'%23FF4081\' stroke-width=\'3\' fill=\'none\'/><path d=\'M15,40 Q25,25 35,40 Z\' fill=\'%2381D4FA\' opacity=\'0.7\'/><path d=\'M85,40 Q75,25 65,40 Z\' fill=\'%2381D4FA\' opacity=\'0.7\'/></svg>'">
+                        </div>
+                        <div class="speech-bubble">
+                            <p id="clara-speech">¡Hola amiguito! Cargando el bosque mágico...</p>
+                            <button id="btn-repeat" class="btn-repeat" title="Repetir instrucción">🔊 Escuchar de nuevo</button>
+                        </div>
+                    </div>
+
+                    <!-- Panel Derecho: Tablero del Juego Activo -->
+                    <div class="board-panel">
+                        
+                        <!-- NIVEL 1: ENCUENTRA LA FIGURA -->
+                        <div id="game-level-1" class="level-container active">
+                            <h2 class="level-title">¿Dónde está?</h2>
+                            <div id="shapes-grid" class="shapes-grid">
+                                <!-- Se generarán dinámicamente -->
+                            </div>
+                        </div>
+
+                        <!-- NIVEL 2: EL MONSTRUO HAMBRIENTO -->
+                        <div id="game-level-2" class="level-container">
+                            <h2 class="level-title">¡Alimenta al Monstruo!</h2>
+                            <div class="monster-game-area">
+                                <div class="shapes-palette" id="monster-shapes-palette">
+                                    <!-- Figuras para arrastrar -->
+                                </div>
+                                <div class="monster-container">
+                                    <!-- Un monstruo interactivo con SVG -->
+                                    <div class="monster" id="monster-dropzone">
+                                        <div class="monster-eyes">
+                                            <div class="monster-eye"><div class="pupil"></div></div>
+                                            <div class="monster-eye"><div class="pupil"></div></div>
+                                        </div>
+                                        <div class="monster-mouth" id="monster-mouth">
+                                            <div class="monster-teeth"></div>
+                                            <div class="monster-mouth-inner"></div>
+                                            <div class="monster-target-shadow" id="monster-target-shadow">
+                                                <!-- Silueta de la figura que el monstruo quiere comer -->
+                                            </div>
+                                        </div>
+                                        <div class="monster-body-label" id="monster-request-label">¡Tengo hambre!</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NIVEL 3: CREADOR MÁGICO -->
+                        <div id="game-level-3" class="level-container">
+                            <h2 class="level-title">¡Construye el Dibujo!</h2>
+                            <div class="builder-game-area">
+                                <div class="builder-palette" id="builder-shapes-palette">
+                                    <!-- Figuras geométricas listas para ser arrastradas al dibujo -->
+                                </div>
+                                <div class="builder-canvas" id="builder-canvas">
+                                    <!-- Silueta del dibujo a completar (ej. una casita o un cohete) -->
+                                    <div class="silhouette-wrapper" id="silhouette-wrapper">
+                                        <!-- Aquí se cargará el SVG del dibujo con sus zonas de soltar -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- PANTALLA 3: FELICIDADES / FINAL -->
+            <section id="screen-congrats" class="game-screen">
+                <div class="congrats-content">
+                    <div class="sparkles-container">✨ 🎉 🌟 🥳 ✨</div>
+                    <h1 class="congrats-title">¡Eres genial!</h1>
+                    <p class="congrats-subtitle">¡Completaste todos los niveles del bosque mágico!</p>
+                    
+                    <div class="congrats-character-container">
+                        <img src="assets/fairy_clara.png" alt="Hada Clara" class="character-congrats animated-bounce" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'40\' r=\'25\' fill=\'%23FFD1DC\'/><polygon points=\'50,65 15,95 85,95\' fill=\'%23B39DDB\'/><circle cx=\'42\' cy=\'35\' r=\'3\' fill=\'%23333\'/><circle cx=\'58\' cy=\'35\' r=\'3\' fill=\'%23333\'/><path d=\'M40,50 Q50,60 60,50\' stroke=\'%23FF4081\' stroke-width=\'3\' fill=\'none\'/><path d=\'M15,40 Q25,25 35,40 Z\' fill=\'%2381D4FA\' opacity=\'0.7\'/><path d=\'M85,40 Q75,25 65,40 Z\' fill=\'%2381D4FA\' opacity=\'0.7\'/></svg>'">
+                    </div>
+                    
+                    <button id="btn-replay" class="btn-play pulse-animation">¡Jugar de Nuevo! 🔄</button>
+                </div>
+            </section>
+
+        </main>
+        
+        <!-- Elemento para confeti visual o burbujas flotantes -->
+        <div id="particle-canvas" class="particle-canvas"></div>
+    </div>
+
+    <!-- Cargar la lógica principal del juego -->
+    <script src="app.js"></script>
+</body>
+</html>
