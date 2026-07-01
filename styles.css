@@ -1,0 +1,1019 @@
+/* ==========================================================================
+   EL DOSQUE MÁGICO DE LAS FIGURAS - ESTILOS PRINCIPALES
+   ========================================================================== */
+
+/* Variables de Diseño */
+:root {
+    --bg-magical-forest: linear-gradient(135deg, #1f1437 0%, #3b2063 50%, #683082 100%);
+    --bg-glass: rgba(255, 255, 255, 0.12);
+    --bg-glass-hover: rgba(255, 255, 255, 0.22);
+    --border-glass: 2px solid rgba(255, 255, 255, 0.2);
+    --border-glass-active: 2px solid rgba(255, 255, 255, 0.4);
+    
+    --color-text-white: #ffffff;
+    --color-text-bubble: #2d184c;
+    --color-highlight-yellow: #fff350;
+    --color-highlight-pink: #ff528c;
+    
+    /* Colores de las Figuras Geométricas */
+    --color-shape-red: #ff3d6a;
+    --color-shape-blue: #00d2ff;
+    --color-shape-green: #3cd070;
+    --color-shape-yellow: #ffd000;
+    --color-shape-orange: #ff9100;
+    --color-shape-purple: #c511ff;
+
+    --font-primary: 'Fredoka', 'Quicksand', system-ui, -apple-system, sans-serif;
+    --font-secondary: 'Quicksand', system-ui, -apple-system, sans-serif;
+}
+
+/* Reset y Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+body {
+    font-family: var(--font-primary);
+    background: #110822;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: var(--color-text-white);
+}
+
+/* Contenedor Principal del Juego (Responsivo y Adaptable) */
+#game-container {
+    position: relative;
+    width: 100%;
+    max-width: 1024px;
+    height: 100vh;
+    max-height: 768px;
+    background: var(--bg-magical-forest);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    border-radius: 0;
+}
+
+@media (min-width: 1025px) {
+    #game-container {
+        height: 90vh;
+        border-radius: 30px;
+        border: 4px solid rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* ==========================================================================
+   HEADER DEL JUEGO
+   ========================================================================== */
+.game-header {
+    height: 70px;
+    padding: 10px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    z-index: 10;
+}
+
+/* Controles de Sonido y Voz */
+.header-left {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-icon {
+    background: var(--bg-glass);
+    border: var(--border-glass);
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-icon:hover {
+    transform: scale(1.1);
+    background: var(--bg-glass-hover);
+    border-color: rgba(255,255,255,0.4);
+}
+
+.btn-icon.muted {
+    opacity: 0.5;
+    background: rgba(255, 0, 0, 0.15);
+    border-color: rgba(255, 0, 0, 0.3);
+}
+
+/* Barra de Progreso y Estrellas */
+.progress-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.star-container {
+    display: flex;
+    gap: 8px;
+}
+
+.star-slot {
+    font-size: 26px;
+    filter: grayscale(1) opacity(0.3);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.5);
+    transform: scale(0.8);
+    display: inline-block;
+}
+
+.star-slot.active {
+    filter: none;
+    opacity: 1;
+    transform: scale(1.2);
+    animation: star-shine 1s infinite alternate;
+}
+
+.score-display {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--color-highlight-yellow);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    letter-spacing: 1px;
+}
+
+/* Selección de Voz */
+.header-right {
+    position: relative;
+}
+
+.voice-select-dropdown {
+    background: rgba(0, 0, 0, 0.4);
+    border: var(--border-glass);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-family: var(--font-secondary);
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+    max-width: 140px;
+    transition: all 0.3s;
+}
+
+.voice-select-dropdown:hover {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================================================
+   PANTALLAS DEL JUEGO
+   ========================================================================== */
+.game-canvas {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: scale(0.96);
+    padding: 20px;
+}
+
+.game-screen.active {
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* 1. PANTALLA DE BIENVENIDA */
+#screen-welcome {
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, rgba(94,42,126,0.3) 0%, rgba(31,20,55,0) 70%);
+}
+
+.welcome-content {
+    text-align: center;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.game-title {
+    font-size: 52px;
+    line-height: 1.1;
+    font-weight: 700;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 40px rgba(197, 17, 255, 0.3);
+    color: var(--color-text-white);
+}
+
+.game-title .highlight {
+    color: var(--color-highlight-yellow);
+    font-size: 58px;
+    display: inline-block;
+    margin-top: 5px;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 243, 80, 0.5);
+}
+
+.game-subtitle {
+    font-family: var(--font-secondary);
+    font-weight: 500;
+    font-size: 22px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 10px;
+}
+
+.welcome-character-container {
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.character-welcome {
+    height: 160px;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.4));
+}
+
+.btn-play {
+    background: linear-gradient(135deg, #ff9100 0%, #ff3d6a 100%);
+    border: none;
+    color: white;
+    font-family: var(--font-primary);
+    font-weight: 700;
+    font-size: 32px;
+    padding: 16px 50px;
+    border-radius: 40px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(255, 61, 106, 0.4), inset 0 -4px 0px rgba(0,0,0,0.2), inset 0 4px 0px rgba(255,255,255,0.3);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-play:hover {
+    transform: scale(1.08) translateY(-3px);
+    box-shadow: 0 15px 30px rgba(255, 61, 106, 0.6), inset 0 -4px 0px rgba(0,0,0,0.2), inset 0 4px 0px rgba(255,255,255,0.4);
+}
+
+.btn-play:active {
+    transform: scale(0.98) translateY(2px);
+    box-shadow: 0 5px 10px rgba(255, 61, 106, 0.4);
+}
+
+/* ==========================================================================
+   2. PANTALLA DE JUEGO
+   ========================================================================== */
+.play-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 20px;
+    height: 100%;
+}
+
+@media (max-width: 768px) {
+    .play-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        gap: 15px;
+    }
+}
+
+/* Panel Izquierdo: Clara */
+.clara-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-glass);
+    border: var(--border-glass);
+    border-radius: 24px;
+    padding: 20px;
+    gap: 15px;
+    backdrop-filter: blur(10px);
+}
+
+@media (max-width: 768px) {
+    .clara-panel {
+        flex-direction: row;
+        padding: 12px 20px;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 15px;
+    }
+}
+
+.clara-avatar-wrapper {
+    height: 130px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .clara-avatar-wrapper {
+        height: 80px;
+        width: 80px;
+        flex-shrink: 0;
+    }
+}
+
+.character-game {
+    height: 120px;
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.3));
+}
+
+@media (max-width: 768px) {
+    .character-game {
+        height: 70px;
+    }
+}
+
+/* Bocadillo de Diálogo */
+.speech-bubble {
+    position: relative;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 15px 20px;
+    color: var(--color-text-bubble);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .speech-bubble {
+        margin-left: 5px;
+        padding: 10px 15px;
+    }
+}
+
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -12px;
+    transform: translateX(-50%);
+    border-width: 0 12px 12px 12px;
+    border-style: solid;
+    border-color: transparent transparent #ffffff transparent;
+}
+
+@media (max-width: 768px) {
+    .speech-bubble::after {
+        left: -12px;
+        top: 50%;
+        transform: translateY(-50%) rotate(-90deg);
+    }
+}
+
+#clara-speech {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    #clara-speech {
+        text-align: left;
+        font-size: 14px;
+    }
+}
+
+.btn-repeat {
+    align-self: center;
+    background: linear-gradient(135deg, #7b2cbf 0%, #5a189a 100%);
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 15px;
+    font-family: var(--font-primary);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(90, 24, 154, 0.3);
+    transition: all 0.2s;
+    outline: none;
+}
+
+.btn-repeat:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(90, 24, 154, 0.4);
+}
+
+.btn-repeat:active {
+    transform: scale(0.95);
+}
+
+/* Panel Derecho: Tablero */
+.board-panel {
+    background: var(--bg-glass);
+    border: var(--border-glass);
+    border-radius: 24px;
+    padding: 20px;
+    position: relative;
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .board-panel {
+        padding: 15px;
+        min-height: 350px;
+    }
+}
+
+.level-container {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+}
+
+.level-container.active {
+    display: flex;
+}
+
+.level-title {
+    font-size: 26px;
+    color: var(--color-highlight-yellow);
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+    .level-title {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+}
+
+/* ==========================================================================
+   ESTILOS DE CADA NIVEL
+   ========================================================================== */
+
+/* --- NIVEL 1: ENCUENTRA LA FIGURA --- */
+.shapes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    justify-content: center;
+    align-content: center;
+    max-width: 500px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+@media (max-width: 500px) {
+    .shapes-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+/* Estilo para las figuras en general */
+.shape-item {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: var(--border-glass);
+    border-radius: 20px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.shape-item:hover {
+    transform: translateY(-5px) scale(1.05);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.shape-item:active {
+    transform: scale(0.95);
+}
+
+.shape-item svg {
+    width: 75%;
+    height: 75%;
+    filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35));
+    transition: transform 0.3s;
+}
+
+.shape-item:hover svg {
+    transform: scale(1.1);
+}
+
+.shape-item.correct {
+    animation: correct-bounce 0.6s ease;
+    border-color: var(--color-shape-green) !important;
+    background: rgba(60, 208, 112, 0.2) !important;
+}
+
+.shape-item.incorrect {
+    animation: incorrect-shake 0.5s ease;
+    border-color: var(--color-shape-red) !important;
+    background: rgba(255, 61, 106, 0.2) !important;
+}
+
+/* --- NIVEL 2: EL MONSTRUO HAMBRIENTO --- */
+.monster-game-area {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 20px;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .monster-game-area {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        gap: 25px;
+    }
+}
+
+.shapes-palette {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 600px) {
+    .shapes-palette {
+        grid-template-columns: repeat(4, 1fr);
+        padding: 10px;
+        gap: 10px;
+    }
+}
+
+.draggable-shape {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+    touch-action: none;
+    z-index: 5;
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.draggable-shape:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: scale(1.05);
+}
+
+.draggable-shape:active {
+    cursor: grabbing;
+}
+
+.draggable-shape svg {
+    width: 75%;
+    height: 75%;
+    filter: drop-shadow(0 5px 8px rgba(0,0,0,0.3));
+    pointer-events: none;
+}
+
+.drag-clone {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.drag-clone svg {
+    width: 80%;
+    height: 80%;
+}
+
+.dragging {
+    opacity: 0.25;
+}
+
+.monster-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.monster {
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle at 35% 35%, #9c27b0, #673ab7);
+    border-radius: 50% 50% 45% 45%;
+    position: relative;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), inset -10px -10px 20px rgba(0,0,0,0.3), inset 10px 10px 20px rgba(255,255,255,0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 25px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.monster.hovered {
+    transform: scale(1.08);
+    background: radial-gradient(circle at 35% 35%, #ab47bc, #7b1fa2);
+    box-shadow: 0 20px 40px rgba(156, 39, 176, 0.4);
+}
+
+.monster-eyes {
+    position: absolute;
+    top: 30px;
+    display: flex;
+    gap: 15px;
+}
+
+.monster-eye {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2), inset 0 -2px 5px rgba(0,0,0,0.1);
+}
+
+.pupil {
+    width: 18px;
+    height: 18px;
+    background: #110822;
+    border-radius: 50%;
+    position: relative;
+    transition: transform 0.1s ease;
+}
+
+.monster-mouth {
+    width: 130px;
+    height: 70px;
+    background: #1e0533;
+    border-radius: 10px 10px 50px 50px;
+    position: relative;
+    overflow: hidden;
+    border: 4px solid #4a148c;
+    box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: height 0.2s, border-radius 0.2s;
+}
+
+.monster.eating .monster-mouth {
+    animation: chomp 0.5s ease 2;
+}
+
+.monster-teeth {
+    position: absolute;
+    top: 0;
+    left: 8px;
+    right: 8px;
+    height: 10px;
+    background-image: linear-gradient(45deg, transparent 50%, white 50%), linear-gradient(-45deg, transparent 50%, white 50%);
+    background-size: 12px 12px;
+    background-repeat: repeat-x;
+}
+
+.monster-target-shadow {
+    width: 42px;
+    height: 42px;
+    opacity: 0.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: pulse-slow 2s infinite ease-in-out;
+}
+
+.monster-target-shadow svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 8px rgba(255, 243, 80, 0.8));
+}
+
+.monster-body-label {
+    position: absolute;
+    bottom: -32px;
+    background: #ffd000;
+    color: #2d184c;
+    padding: 6px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* --- NIVEL 3: CREADOR MÁGICO --- */
+.builder-game-area {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 20px;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .builder-game-area {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        gap: 15px;
+    }
+}
+
+.builder-palette {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    align-items: center;
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+@media (max-width: 600px) {
+    .builder-palette {
+        flex-direction: row;
+        max-height: none;
+        overflow-x: auto;
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+.builder-canvas {
+    aspect-ratio: 4/3;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    min-height: 280px;
+    width: 100%;
+}
+
+.silhouette-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.silhouette-wrapper svg {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+/* Zonas de encaje en el dibujo de construcción */
+.dropzone-target {
+    fill: rgba(255, 255, 255, 0.12);
+    stroke: rgba(255, 255, 255, 0.35);
+    stroke-width: 3;
+    stroke-dasharray: 6 6;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.dropzone-target.hovered {
+    fill: rgba(255, 243, 80, 0.25);
+    stroke: var(--color-highlight-yellow);
+    stroke-width: 4;
+}
+
+.dropzone-target.filled {
+    stroke-dasharray: none;
+    stroke-width: 1.5;
+    cursor: default;
+    animation: shape-snap 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ==========================================================================
+   3. PANTALLA DE FELICIDADES
+   ========================================================================== */
+#screen-congrats {
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, rgba(197, 17, 255, 0.25) 0%, rgba(17,8,34,0) 70%);
+}
+
+.congrats-content {
+    text-align: center;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.sparkles-container {
+    font-size: 32px;
+    animation: sparkle-float 1.5s infinite alternate;
+}
+
+.congrats-title {
+    font-size: 56px;
+    color: var(--color-highlight-yellow);
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 208, 0, 0.4);
+}
+
+@media (max-width: 500px) {
+    .congrats-title {
+        font-size: 42px;
+    }
+}
+
+.congrats-subtitle {
+    font-family: var(--font-secondary);
+    font-size: 20px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.congrats-character-container {
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.character-congrats {
+    height: 160px;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+}
+
+/* Canvas de Partículas */
+.particle-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 99;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: particle-fall 3s linear infinite;
+}
+
+/* ==========================================================================
+   ANIMACIONES
+   ========================================================================== */
+
+/* Flotar */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+.animated-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Rebote feliz */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+.animated-bounce {
+    animation: bounce 1.8s ease-in-out infinite;
+}
+
+/* Brillo de estrellas */
+@keyframes star-shine {
+    from { filter: drop-shadow(0 0 2px rgba(255,208,0,0.4)); transform: scale(1.1); }
+    to { filter: drop-shadow(0 0 10px rgba(255,208,0,0.85)); transform: scale(1.25); }
+}
+
+/* Pulso */
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 10px 25px rgba(255, 61, 106, 0.4), inset 0 -4px 0px rgba(0,0,0,0.2), inset 0 4px 0px rgba(255,255,255,0.3); }
+    50% { transform: scale(1.05); box-shadow: 0 15px 35px rgba(255, 61, 106, 0.6), inset 0 -4px 0px rgba(0,0,0,0.2), inset 0 4px 0px rgba(255,255,255,0.4); }
+    100% { transform: scale(1); box-shadow: 0 10px 25px rgba(255, 61, 106, 0.4), inset 0 -4px 0px rgba(0,0,0,0.2), inset 0 4px 0px rgba(255,255,255,0.3); }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite ease-in-out;
+}
+
+/* Caída de confeti */
+@keyframes particle-fall {
+    0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(105vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Vibración de error */
+@keyframes incorrect-shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
+/* Rebote de acierto */
+@keyframes correct-bounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    40% { transform: translateY(-15px) scale(1.08); }
+    70% { transform: translateY(5px) scale(0.95); }
+}
+
+/* Efecto de encaje */
+@keyframes shape-snap {
+    0% { transform: scale(1.3); filter: brightness(2); }
+    100% { transform: scale(1); filter: brightness(1); }
+}
+
+/* Animación del monstruo comiendo */
+@keyframes chomp {
+    0%, 100% { height: 70px; border-radius: 10px 10px 50px 50px; }
+    50% { height: 10px; border-radius: 10px 10px 10px 10px; }
+}
+
+/* Animación de flotar suave en congratulations */
+@keyframes sparkle-float {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-5px) scale(1.12); }
+}
+
+/* Pulso suave */
+@keyframes pulse-slow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
